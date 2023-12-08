@@ -1,13 +1,15 @@
 import Image from "next/image";
 import Login from "@/components/Login";
-import { getSession, signOut, useSession } from "next-auth/react";
+import { GetSessionParams, getSession, signOut, useSession } from "next-auth/react";
 import Navbar from "@/components/Navbar";
 import requests from "@/utils/requests";
 import Hero from "@/components/Hero";
 import Row from "@/components/Row";
+import { moviePoster,content, TrendingNow, TopRated, ActionMovies, ComedyMovies, HorrorMovies, RomanceMovies, Documentaries } from "@/pages/types";
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps(context: GetSessionParams | undefined) {
   const session = await getSession(context);
+
 
   const [
     moviePosters,
@@ -18,7 +20,7 @@ export async function getServerSideProps(context) {
     horrorMovies,
     romanceMovies,
     documentaries,
-  ] = await Promise.all([
+  ]: [moviePoster, TrendingNow, TopRated, ActionMovies, ComedyMovies, HorrorMovies, RomanceMovies, Documentaries ] =  await Promise.all([
     fetch(requests.fetchMoviePosters).then((res) => res.json()),
     fetch(requests.fetchTrending).then((res) => res.json()),
     fetch(requests.fetchTopRated).then((res) => res.json()),
@@ -52,6 +54,15 @@ export default function Home({
   horrorMovies,
   romanceMovies,
   documentaries,
+}:{
+  moviePosters: moviePoster[];
+  trendingNow: TrendingNow[];
+  topRated: TopRated[];
+  actionMovies: ActionMovies[];
+  comedyMovies: ComedyMovies[];
+  horrorMovies: HorrorMovies[];
+  romanceMovies: RomanceMovies[];
+  documentaries: Documentaries[];
 }) {
   const { data: session } = useSession();
 
